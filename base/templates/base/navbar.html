@@ -4,7 +4,13 @@
 
 <form method="GET" action="{% url 'home' %}">
     <input type="text" name="q" placeholder="Buscar ofertas de trabajo ... ">
+</form>
 
-</input>
+{% if request.user.is_authenticated %}
+    <a href="{% url 'logout' %}"> Cerrar Sesión </a>
+    <p> Hola {{ request.user }} </p>
+    {% else %}
+    <a href="{% url 'login' %}"> Iniciar Sesión </a>
+{% endif %}
 
 <hr>
