@@ -2,9 +2,11 @@
     <h1> LOGO </h1>
 </a>
 
+{% if request.user.user_type != "client" %}
 <form method="GET" action="{% url 'home' %}">
     <input type="text" name="q" placeholder="Buscar ofertas de trabajo ... ">
 </form>
+{% endif %}
 
 {% if request.user.is_authenticated %}
     <a href="{% url 'logout' %}"> Cerrar Sesión </a>

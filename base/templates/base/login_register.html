@@ -3,6 +3,7 @@
 
 {% block content %}
 
+{% if page == 'login'%}
 <div> 
     
     <form method="POST" action=""> 
@@ -15,6 +16,49 @@
 
         <input type="submit" value="Ingresar">
     </form>
+    <p> ¿Aún no tienes cuenta? </p>
+    <a href="{% url 'register' %}">Registrate</a>
 </div>
+{% else %}
+<div> 
+    
+    <form method="POST" action=""> 
+        {% csrf_token %}
+        <div>
+            <label> Nombre: </label>
+            {{ form.first_name }}
+        </div>
+        <div>
+            <label> Apellido: </label>
+            {{ form.last_name }}
+        </div>
+        <div>
+            <label> Usuario: </label>
+            {{ form.username }}
+        </div>
+        <div>
+            <label> Quiero ser: </label>
+            {{ form.user_type }}
+        </div>
+        <div>
+            <label> Correo: </label>
+            {{ form.email }}
+        </div>
+        <div>
+            <label> Contraseña: </label>
+            {{ form.password1 }}
+        </div>
+        <div>
+            <label> Repetir Contraseña: </label>
+            {{ form.password2 }}
+        </div>
+
+        <input type="submit" value="Registrarse">
+    </form>
+    <p> ¿Ya tienes una cuenta ? </p>
+    <a href="{% url 'login' %}">Iniciar Sesión</a>
+</div>
+{% endif %}
+
 
 {% endblock %}

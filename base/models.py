@@ -10,7 +10,7 @@ class Service(models.Model):
 
 class User(AbstractUser):
     bio = models.TextField(max_length=500, blank=True)
-    user_type = models.CharField(max_length=20, default='Professional')
+    user_type = models.CharField(max_length=20, choices=(('client', 'cliente'), ('professional', 'profesional')), default='cliente')
 
     class Meta(AbstractUser.Meta):
         swappable = 'AUTH_USER_MODEL'

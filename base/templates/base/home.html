@@ -30,10 +30,11 @@
         <div>
             {% for offer in offers %}
             <div>
-               
-                <a href="{% url 'update-offer' offer.id %}"> Editar </a>
-                <a href="{% url 'delete-offer' offer.id %}"> Eliminar </a>
-               
+                {% if request.user == offer.user %}
+                    <a href="{% url 'update-offer' offer.id %}"> Editar </a>
+                    <a href="{% url 'delete-offer' offer.id %}"> Eliminar </a>
+                {% endif %}
+
                 <span> @{{ offer.user.username }} </span>
 
                 <h5>{{ offer.id }} -- <a href="{% url 'offer' offer.id %}">{{ offer.title }} </a></h5>
