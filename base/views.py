@@ -67,7 +67,18 @@ def home(request):
 
 def offer(request, pk):
     offer = Offer.objects.get(id=pk)
-    context = {'offer': offer}
+
+    offer_messages = offer.messages_set.all()
+
+    if request.method == 'POST':
+        message = Messages.objects.create(
+            offer=offer,
+            sender=request.user,
+            content=request.POST.get('content')
+        )
+        return redirect('offer', pk=offer.id)
+
+    context = {'offer': offer, 'offer_messages': offer_messages}
     return render(request, 'base/offer.html', context)
 
 @login_required(login_url='login')

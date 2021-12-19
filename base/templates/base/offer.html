@@ -1,9 +1,56 @@
 {% extends 'base/main.html' %}
 
 {% block content %}
-    <h1> OFFER </h1>
-    <h2> {{room.name}} </h2>
 
-    <p> {{room.description}} </p>
+<style>
+    .offer-container {
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+    }
+</style>
+<div class="offer-container">
+    <div>
+            <h2> {{offer.title}} </h2>
+            <p> {{offer.description}} </p>
+            <p> Pago: S\. {{offer.price}} </p>
+            <p> Días: {{offer.days}} </p>
+        <button type="button" >
+            <a href=""> Aplicar </a>
+        </button>
+
+        <div class="commet-wrapper">
+            <h3> Chat </h3>
+            <hr>
+            {% for message in offer_messages %}
+                <div class="comment">
+                    <div class="comment-header">
+                        <small> @{{message.sender.username}}, hace {{message.created_at | timesince}} </small>
+                    </div>
+                    <div class="comment-body">
+                        <p> {{message.content}} </p>
+                    </div>
+                    <hr>
+                </div>
+            {% endfor %}
+        </div>
+
+
+        {% if request.user.is_authenticated %}
+        <div class="comment-form">
+            <form method="POST" action="">
+                {% csrf_token %}
+                <input type="text" name="content" placeholder="Escribe un mensaje...">
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    <div> 
+        <h3> Participantes </h3>
+        <hr>
+    </div>
+</div>
+
+
+
 {% endblock content %}
 

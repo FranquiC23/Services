@@ -23,7 +23,7 @@ class Offer(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=200)
     description = models.TextField()
-    status = models.CharField(max_length=20, default='Active')
+    status = models.CharField(max_length=20, choices=(('active', 'activo'), ('pending', 'pendiente'), ('finished', 'finalizado')), default='activo')
     price = models.DecimalField(max_digits=6, decimal_places=2)
     days = models.IntegerField()
     updated_at = models.DateTimeField(auto_now=True)
@@ -43,4 +43,4 @@ class Messages(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.message
+        return self.content
