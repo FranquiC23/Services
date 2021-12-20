@@ -9,7 +9,13 @@ class UserForm(UserCreationForm):
         model = User
         fields = ['first_name', 'last_name', 'username','email', 'user_type','password1' ,'password2']
 
+class MyUserUpdateForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ['avatar', 'first_name', 'last_name', 'username', 'service', 'bio']
+
 class OfferForm(ModelForm):
     class Meta:
         model = Offer
         fields = "__all__"
+        exclude = ['user', 'aspirant', 'status']

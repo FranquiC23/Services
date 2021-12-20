@@ -4,9 +4,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 from .models import Service, User, Offer, Messages
-from .forms import OfferForm, UserForm
+from .forms import OfferForm, UserForm, MyUserUpdateForm
 
 
+
+def userProfile(request, pk):
+    user = User.objects.get(id=pk)
+    offers = user.offer_set.all()
+    services = Service.objects.all()
+    context = {'user': user, 'offers': offers, 'services': services}
+    return render(request, 'base/profile.html', context)
 
 def registerPage(request):
 
@@ -34,16 +41,16 @@ def loginPage(request):
         return redirect('home')
 
     if request.method == 'POST':
-        username = request.POST.get('username').lower()
+        email = request.POST.get('email').lower()
         password = request.POST.get('password')
 
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, email=email, password=password)
 
         if user is not None:
             login(request, user)
             return redirect('home')
         else:
-            messages.error(request, 'Usuario o contraseña incorrecta')
+            messages.error(request, 'Correo o contraseña incorrecta')
 
     context = {'page': page}
     return render(request, 'base/login_register.html', context)
@@ -65,8 +72,15 @@ def home(request):
     context = {'offers': offers, 'offer_count': offer_count, 'services': services}
     return render(request, 'base/home.html', context)
 
+def services(request):
+    services = Service.objects.all()
+    context = {'services': services}
+    return render(request, 'base/services.html', context)
+
 def offer(request, pk):
     offer = Offer.objects.get(id=pk)
+    aspirant = offer.aspirant.all()
+
 
     offer_messages = offer.messages_set.all()
 
@@ -76,21 +90,35 @@ def offer(request, pk):
             sender=request.user,
             content=request.POST.get('content')
         )
+
+        offer.aspirant.add(request.user)
         return redirect('offer', pk=offer.id)
 
-    context = {'offer': offer, 'offer_messages': offer_messages}
+    context = {'offer': offer, 'offer_messages': offer_messages, 'aspirant': aspirant}
     return render(request, 'base/offer.html', context)
 
 @login_required(login_url='login')
 def createOffer(request):
     form = OfferForm()
-    if request.method == 'POST':
-        form = OfferForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
+    services = Service.objects.all()
 
-    context = {'form': form}
+    if request.method == 'POST':
+        service_name = request.POST.get('service')
+        service, created = Service.objects.get_or_create(name=service_name)
+        form = OfferForm(request.POST)
+        
+
+        Offer.objects.create(
+            title=request.POST.get('title'),
+            description=request.POST.get('description'),
+            service=service,
+            user=request.user,
+            price=request.POST.get('price'),
+            days=request.POST.get('days')
+        )
+        return redirect('home')
+
+    context = {'form': form, 'services': services}
     return render(request, 'base/offer_form.html', context)
 
 @login_required(login_url='login')
@@ -103,10 +131,15 @@ def updateOffer(request, pk):
         return redirect('home')
 
     if request.method == 'POST':
-        form = OfferForm(request.POST, instance=offer)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
+        service_name = request.POST.get('service')
+        service, created = Service.objects.get_or_create(name=service_name)
+        offer.title = request.POST.get('title')
+        offer.description = request.POST.get('description')
+        service = service
+        offer.price = request.POST.get('price')
+        offer.days = request.POST.get('days')
+        offer.save()
+        return redirect('home')
 
     context = {'form': form}
 
@@ -127,3 +160,18 @@ def deleteOffer(request, pk):
     context = {'obj': offer}
 
     return render(request, 'base/delete_offer.html', context)
+
+
+@login_required(login_url='login')
+def updateUser(request):
+    user = request.user 
+    form = MyUserUpdateForm(instance=user)
+
+    if request.method == 'POST':
+        form = MyUserUpdateForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Datos actualizados')
+            return redirect('profile', pk=user.id)
+
+    return render(request, 'base/update-user.html', {'form': form})
