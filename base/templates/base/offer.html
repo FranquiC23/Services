@@ -50,6 +50,7 @@
         {% endif %}
 
       </div>
+      
       <div class="room__box scroll">
         <div class="room__header scroll">
           <div class="room__info">
@@ -65,18 +66,14 @@
               <span>@{{offer.user.username}}</span>
             </a>
           </div>
-          <!-- <div class="room__details">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quasi, tenetur laudantium? Dicta repellendus
-            rerum consectetur, voluptatem repudiandae eum ea porro cupiditate provident nulla, deserunt, ab ipsum
-            corporis laboriosam deleniti molestias?
-          </div> -->
+          <div class="room__details">
+            <p> {{offer.description}}</p>
+          </div>
           <span class="room__topics">{{offer.service}}</span>
         </div>
 
         <div class="room__conversation">
           <div class="threads scroll">
-
-
             {% for message in offer_messages %}
             <div class="thread">
               <div class="thread__top">
@@ -89,9 +86,9 @@
                   </a>
                   <span class="thread__date">hace {{message.created_at|timesince}}</span>
                 </div>
-
+                
                 {% if request.user == message.sender %}
-                <a href="{% url 'delete-message' message.id %}">
+                <a href="">
                   <div class="thread__delete">
                     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
                       <title>remove</title>
@@ -110,14 +107,23 @@
             {% endfor %}
           </div>
         </div>
-
       </div>
+      
+      {% if request.user == offer.user %}
       <div class="room__message">
         <form action="" method="POST">
           {% csrf_token %}
           <input name="content" placeholder="Enviar mensaje..." />
         </form>
       </div>
+      {% elif request.user.user_type != 'client'%}
+      <div class="room__message">
+        <form action="" method="POST">
+          {% csrf_token %}
+          <input name="content" placeholder="Enviar mensaje..." />
+        </form>
+      </div>
+      {% endif %}
     </div>
     <!-- Room End -->
 
