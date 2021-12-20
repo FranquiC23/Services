@@ -5,12 +5,12 @@
 <main class="layout layout--3">
   <div class="container">
 
-    <!-- Topics Start -->
+    <!-- Service Start -->
     {% include 'base/services_component.html' %}
 
-    <!-- Topics End -->
+    <!-- Services End -->
 
-    <!-- Room List Start -->
+    <!-- Offer List Start -->
     <div class="roomList">
       <div class="mobile-menu">
         <form action="{% url 'home' %}" method="GET" class="header__search">
@@ -36,6 +36,7 @@
           <p>{{offer_count}} ofertas disponibles</p>
         </div>
 
+        {% if request.user.user_type == 'client'%}
         <a class="btn btn--main" href="{% url 'create-offer' %}">
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
             <title>add</title>
@@ -45,18 +46,19 @@
           </svg>
           Crear Oferta
         </a>
+        {% endif %}
       </div>
 
       {% include 'base/feed_component.html' %}
 
     </div>
-    <!-- Room List End -->
+    <!-- Offer List End -->
 
-    <!-- Activities Start -->
+    <!-- Activities / notificactions Start -->
     {% include 'base/notifications.html'%}
     <!--{% include 'base/activity_component.html' %}-->
 
-    <!-- Activities End -->
+    <!-- Activities / Notifications End -->
   </div>
 </main>
 

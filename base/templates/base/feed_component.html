@@ -33,9 +33,19 @@
             </svg>
             {{offer.aspirant.all.count}} Vistos
         </a>
+        
         <p class="roomListRoom__topic">S\. {{offer.price}}</p>
         <p class="roomListRoom__topic">{{offer.days}} días</p>
         <p class="roomListRoom__topic">{{offer.service.name}}</p>
+        
+        <!-- Falta Funcionalidad -->
+        {% if request.user.user_type != 'client' %}
+        <a class="btn btn--pill" href="{% url 'offer' offer.id %}">
+           Aplicar
+          </a>
+        {% endif %}
+
+        
     </div>
 </div>
 {% endfor %}

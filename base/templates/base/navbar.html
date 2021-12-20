@@ -5,6 +5,7 @@
             <img src="https://img.icons8.com/external-others-phat-plus/64/000000/external-job-global-crisis-color-line-others-phat-plus.png"/>
                         <h1>EasyJobs</h1>
         </a>
+        {% if request.user.user_type != 'client' %}
         <form class="header__search" method="GET" action="{% url 'home' %}">
             <label>
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
@@ -16,6 +17,7 @@
                 <input name="q" placeholder="Buscar ofertar de trabajo" />
             </label>
         </form>
+        {% endif %}
         <nav class="header__menu">
 
 
@@ -26,8 +28,12 @@
                     <div class="avatar avatar--medium active">
                         <img src="{{request.user.avatar.url}}" />
                     </div>
-                    <p>{{request.user.username}} <span>@{{request.user.username}}</span></p>
-                </a>
+                    {% if request.user.user_type == 'client'%}
+                        <p>{{request.user.first_name}} <span>{{request.user.user_type}} </span> </p>
+                    {% else %}
+                        <p>{{request.user.first_name}} <span>{{request.user.service.name}} </span> </p>
+                    {% endif %}
+                    </a>
                 <button class="dropdown-button">
                     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
                         <title>chevron-down</title>
